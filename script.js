@@ -5,16 +5,6 @@
  * and data storage on Firebase for analysis.
  */
 
-// Import Firebase configuration from separate file
-import firebaseConfig from './config.js';
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Get Firestore instance
-const db = firebase.firestore();
-
-
 // Firebase configuration - YOU NEED TO REPLACE THIS WITH YOUR OWN CONFIG
 const firebaseConfig = {
     apiKey: "AIzaSyCrUPp4SlzJLnAgpuAcMLQEWihPCyVpSwc",
@@ -25,6 +15,12 @@ const firebaseConfig = {
     appId: "1:221906777252:web:0b5b2d7fb50eae2b216231",
     measurementId: "G-3XMX5RCND4"
   };
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Get Firestore instance
+const db = firebase.firestore();
 
 // Array containing all 45 questions/behaviors for the test
 const questions = [
