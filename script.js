@@ -25,8 +25,8 @@ const db = firebase.firestore();
 // Array containing all 45 questions/behaviors for the test
 const questions = [
     "Me conozco a mí mismo, sé lo que pienso, lo que siento y lo que hago.",
-    "Soy capaz de auto motivarme para aprender, estudiar, aprobar, conseguir algo.",
-    "Cuando las cosas me van mal, mi estado de ánimo aguanta hasta que las cosas vayan mejor.",
+     "Soy capaz de auto motivarme para aprender, estudiar, aprobar, conseguir algo."
+/*    "Cuando las cosas me van mal, mi estado de ánimo aguanta hasta que las cosas vayan mejor.",
     "Llego a acuerdos razonables con otras personas cuando tenemos posturas enfrentadas.",
     "Sé qué cosas me ponen alegre y qué cosas me ponen triste.",
     "Sé lo que es más importante en cada momento.",
@@ -68,7 +68,7 @@ const questions = [
     "Me responsabilizo de las cosas que hago.",
     "Me adapto a las nuevas situaciones, aunque me cuesten algún cambio en mi manera de sentir las cosas.",
     "Creo que soy una persona equilibrada emocionalmente.",
-    "Tomo decisiones sin dudar ni titubear demasiado."
+    "Tomo decisiones sin dudar ni titubear demasiado." */
 ];
 
 // Categories and interpretations for score ranges
@@ -158,6 +158,8 @@ function validateDemographicData() {
 function showInstructions() {
     if (validateDemographicData()) {
         document.getElementById('demographic-section').style.display = 'none';
+        // Ocultar la introducción
+        document.querySelector('.intro').style.display = 'none';
         document.getElementById('test-instructions').style.display = 'block';
     }
 }
@@ -167,6 +169,8 @@ function showInstructions() {
  */
 function showQuestions() {
     document.getElementById('test-instructions').style.display = 'none';
+    // Asegurarse de que la introducción sigue oculta
+    document.querySelector('.intro').style.display = 'none';
     document.getElementById('test-container').style.display = 'block';
     document.getElementById('submit-btn').style.display = 'block';
 }
@@ -261,6 +265,9 @@ function calculateResults() {
  * @param {number} score - The total score to display
  */
 function showResults(score) {
+    // Ocultar la sección de preguntas
+    document.getElementById('test-container').style.display = 'none';
+    
     const resultsDiv = document.getElementById('results');
     const scoreSpan = document.getElementById('score');
     const categorySpan = document.getElementById('category');
@@ -327,7 +334,7 @@ function saveUserDataToFirebase() {
         console.log("Document written with ID: ", docRef.id);
         hideLoading();
         // Show thank you message after short delay
-        setTimeout(showThankYouMessage, 1000);
+        //setTimeout(showThankYouMessage, 1000);
     })
     .catch((error) => {
         console.error("Error adding document: ", error);
