@@ -8,8 +8,17 @@
 // Firebase configuration
 import firebaseConfig from './firebase-config.js';
 
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+} else {
+  firebase.app(); // Si ya está inicializado
+}
+
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+//firebase.initializeApp(firebaseConfig);
 
 // Get Firestore instance
 const db = firebase.firestore();
