@@ -5,16 +5,8 @@
  * and data storage on Firebase for analysis.
  */
 
-// Firebase configuration - YOU NEED TO REPLACE THIS WITH YOUR OWN CONFIG
-const firebaseConfig = {
-    apiKey: "AIzaSyCrUPp4SlzJLnAgpuAcMLQEWihPCyVpSwc",
-    authDomain: "test-inteligencia-emocional.firebaseapp.com",
-    projectId: "test-inteligencia-emocional",
-    storageBucket: "test-inteligencia-emocional.firebasestorage.app",
-    messagingSenderId: "221906777252",
-    appId: "1:221906777252:web:0b5b2d7fb50eae2b216231",
-    measurementId: "G-3XMX5RCND4"
-  };
+// Firebase configuration
+import firebaseConfig from './firebase-config.js';
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
