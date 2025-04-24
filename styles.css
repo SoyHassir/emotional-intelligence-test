@@ -1,0 +1,232 @@
+/* 
+ * Emotional Intelligence Test Styles
+ * This stylesheet contains all the visual styling for the emotional intelligence test
+ * Including the new demographic data collection form and loading spinner for Firebase
+ */
+
+/* Base body styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+/* Header styles */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: #2c3e50;
+}
+
+h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Section container styles */
+.section {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+/* Introduction box styles */
+.intro {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+/* Form group styles for demographic data */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Question container styles */
+.question {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+}
+
+/* Question text styles */
+.question-text {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+/* Answer options container */
+.options {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Make options stack vertically on mobile screens */
+@media (max-width: 600px) {
+    .options {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Individual option item */
+.option {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+/* Radio button spacing */
+.option input {
+    margin-right: 8px;
+}
+
+/* Button styles */
+.primary-btn, 
+.secondary-btn {
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    margin: 30px auto;
+    transition: all 0.3s;
+}
+
+.primary-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: #2980b9;
+}
+
+.secondary-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.secondary-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Results section styles - hidden initially */
+#results {
+    display: none;
+}
+
+/* Score display styles */
+#score {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3498db;
+    margin-bottom: 15px;
+}
+
+/* Interpretation text area */
+#interpretation {
+    line-height: 1.8;
+}
+
+/* Category result header */
+.result-category {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+/* Progress bar container */
+.progress-container {
+    background-color: #ddd;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    height: 10px;
+}
+
+/* Progress bar fill */
+.progress-bar {
+    height: 100%;
+    border-radius: 20px;
+    background-color: #3498db;
+}
+
+/* Thank you message section */
+#thank-you {
+    text-align: center;
+}
+
+#thank-you p {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+/* Loading overlay styles */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    color: white;
+}
+
+.loading-spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
