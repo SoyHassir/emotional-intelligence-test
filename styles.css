@@ -34,8 +34,8 @@ body {
 /* ===== Header ===== */
 header {
     text-align: center;
-    margin-bottom: 30px;
-    padding: 10px;
+    margin-bottom: 15px;
+    padding: 5px;
 }
 
 h1 {
@@ -44,6 +44,7 @@ h1 {
     margin-bottom: 10px;
     font-size: 2.5rem;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    line-height: 1.1;
 }
 
 h2 {
@@ -82,6 +83,7 @@ h2 {
 /* ===== Form Fields ===== */
 .form-group {
     margin-bottom: 25px;
+    overflow: hidden;
 }
 
 .form-group label {
@@ -100,6 +102,14 @@ h2 {
     border-radius: 8px;
     font-size: 16px;
     transition: var(--transition);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: white;
+    height: auto;
+    box-sizing: border-box;
+    box-shadow: none;
+    max-width: 100%;
 }
 
 .form-group input:focus,
@@ -107,6 +117,34 @@ h2 {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.1);
+}
+
+.form-group select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 12px) center;
+    padding-right: 30px;
+    color: #495057;
+}
+
+.form-group select option[value=""] {
+    color: rgba(73, 80, 87, 0.5);
+}
+
+.form-group select.empty {
+    color: rgba(73, 80, 87, 0.5);
+}
+
+.form-group select option {
+    background-color: white;
+    color: #495057;
+    padding: 10px;
+}
+
+.form-group select option:checked,
+.form-group select option:hover {
+    background-color: var(--primary-color);
+    color: white;
 }
 
 /* ===== Question Container ===== */
@@ -355,3 +393,207 @@ h2 {
 .section, .question, #results, #thank-you {
     animation: fadeIn 0.5s ease-out;
 }
+
+/* Progress Indicator */
+.progress-section {
+    background-color: white;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+}
+
+.progress-text-container {
+    text-align: center;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+.progress-bar-container {
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-image: linear-gradient(to right, var(--primary-color), var(--accent-color));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Time estimate display */
+.time-estimate {
+    display: inline-block;
+    background-color: rgba(58, 123, 213, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: var(--primary-dark);
+}
+
+.time-icon {
+    margin-right: 6px;
+}
+
+/* Dark mode toggle button */
+.mode-toggle-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--mid-gray);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.mode-toggle-btn:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Transition animations */
+.fade-transition {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Visual feedback for selections */
+.option input[type="radio"] {
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.option input[type="radio"]:checked {
+    transform: scale(1.2);
+}
+
+/* Ripple effect for options */
+.option::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(58, 123, 213, 0.3);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%, -50%);
+    transform-origin: 50% 50%;
+}
+
+.option:active::after {
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0) translate(-50%, -50%);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(20, 20) translate(-50%, -50%);
+        opacity: 0;
+    }
+}
+
+/* Accessibility improvements */
+.form-group input:focus,
+.form-group select:focus,
+.option input:focus,
+button:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.option:focus-within {
+    background-color: rgba(58, 123, 213, 0.15);
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background-image: linear-gradient(135deg, #1f2933 0%, #0f172a 100%);
+    color: #e2e8f0;
+}
+
+.dark-mode .section,
+.dark-mode .intro,
+.dark-mode .question,
+.dark-mode .progress-section {
+    background-color: #2d3748;
+    border-color: #4a5568;
+}
+
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode .result-category {
+    color: #f1f5f9;
+}
+
+.dark-mode .form-group label {
+    color: #cbd5e1;
+}
+
+.dark-mode .form-group input,
+.dark-mode .form-group select {
+    background-color: #1a202c;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+.dark-mode .form-group select option {
+    background-color: #1a202c;
+    color: #e2e8f0;
+}
+
+.dark-mode .question-text {
+    color: #e2e8f0;
+}
+
+.dark-mode .progress-bar-container,
+.dark-mode .progress-container {
+    background-color: #1a202c;
+}
+
+.dark-mode #interpretation {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .primary-btn {
+    background-image: linear-gradient(135deg, #3182ce 0%, #00b5d8 100%);
+}
+
+.dark-mode .primary-btn:hover {
+    background-image: linear-gradient(135deg, #2c5282 0%, #0987a0 100%);
+}
+
+.dark-mode .time-estimate {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+
+.dark-mode .mode-toggle-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+
+#progress-indicator {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin-bottom: 20px;
+  }

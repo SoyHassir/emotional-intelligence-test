@@ -13,6 +13,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
+    <!-- Dark Mode Toggle Button -->
+    <button id="dark-mode-toggle" class="mode-toggle-btn">🌙 Modo oscuro</button>
+    
     <!-- Header section with the main title -->
     <header>
         <h1>Test de Inteligencia Emocional</h1>
@@ -20,74 +23,95 @@
     
     <!-- Introduction section explaining the test -->
     <div class="intro">
-        <p>Las preguntas que encontrarás en este TEST se refieren a la manera habitual que tienes de actuar con las personas con quienes te relacionas. No existen respuestas buenas ni malas, sino respuestas sinceras que deben reflejar tu estilo, tu modo habitual de pensar, hacer y sentir.</p>
+        <p>Este test se basa en el modelo propuesto por José Andrés Ocaña en su obra Mapas mentales y estilos de aprendizaje (2010). Su objetivo es ayudarte a reconocer cómo gestionas tus emociones, identificar fortalezas y áreas de mejora en tus habilidades emocionales y ofrecerte una retroalimentación que potencie tu autoconocimiento.</p>
+        <!-- Added time estimate -->
+        <div class="time-estimate">
+            <span class="time-icon">⏱️</span> Tiempo estimado: 5-10 minutos
+        </div>
     </div>
     
     <!-- Demographic data section (new) -->
-    <div id="demographic-section" class="section">
+    <div id="demographic-section" class="section fade-transition fade-in">
         <h2>Datos Demográficos</h2>
-        <p>Por favor, complete la siguiente información para fines de análisis. Todos los datos serán tratados de forma confidencial.</p>
         
         <div class="form-group">
             <label for="age">Edad:</label>
-            <input type="number" id="age" name="age" min="18" max="100" required>
+            <input type="number" id="age" name="age" min="18" max="100" required aria-required="true">
         </div>
         
         <div class="form-group">
             <label for="gender">Género:</label>
-            <select id="gender" name="gender" required>
+            <select id="gender" name="gender" required aria-required="true">
                 <option value="">Seleccione una opción</option>
                 <option value="male">Masculino</option>
                 <option value="female">Femenino</option>
-                <option value="nonbinary">No binario</option>
-                <option value="other">Otro</option>
                 <option value="prefer_not_to_say">Prefiero no decirlo</option>
             </select>
         </div>
         
         <div class="form-group">
             <label for="education">Nivel de educación:</label>
-            <select id="education" name="education" required>
+            <select id="education" name="education" required aria-required="true">
                 <option value="">Seleccione una opción</option>
                 <option value="primary">Primaria</option>
                 <option value="secondary">Secundaria</option>
-                <option value="bachelor">Licenciatura/Grado</option>
-                <option value="master">Maestría/Máster</option>
+                <option value="technician">Técnico</option>
+                <option value="technologist">Tecnólogo</option>
+                <option value="bachelor">Pregado</option>
+                <option value="specialty">Especialización</option>
+                <option value="master">Maestría</option>
                 <option value="doctorate">Doctorado</option>
-                <option value="other">Otro</option>
             </select>
         </div>
         
         <div class="form-group">
-            <label for="occupation">Ocupación actual:</label>
-            <input type="text" id="occupation" name="occupation" required>
+            <label for="occupation">Ocupación:</label>
+                <select id="occupation" name="occupation" required aria-required="true">
+                    <option value="">Seleccione una opción</option>
+                    <option value="student">Estudiante</option>
+                    <option value="employed">Empleado/a</option>
+                    <option value="selfemployed">Trabajador/a independiente</option>
+                    <option value="retired">Jubilado/a</option>
+                    <option value="unemployed">Desempleado/a</option>
+                    <option value="homemaker">Ama/o de casa</option>
+                </select>
         </div>
         
-        <button id="start-test-btn" class="primary-btn">Comenzar el Test</button>
+        <button id="start-test-btn" class="primary-btn">Comenzar Test</button>
     </div>
     
     <!-- Test instructions (will be shown after demographics) -->
-    <div id="test-instructions" class="section" style="display: none;">
+    <div id="test-instructions" class="section fade-transition" style="display: none;">
         <h2>Instrucciones</h2>
-        <p>Marca la opción que mejor refleje tu comportamiento habitual:</p>
+        <p>Responde con sinceridad cada enunciado, eligiendo la opción que mejor refleje tu conducta habitual; no hay respuestas correctas ni incorrectas, sino pautas para tu desarrollo personal. Marca la opción que mejor refleje tu comportamiento:</p>
         <ul>
-            <li><strong>NUNCA</strong>: No lo hago en ninguna ocasión</li>
-            <li><strong>ALGUNAS VECES</strong>: Lo hago en algunas situaciones</li>
-            <li><strong>SIEMPRE</strong>: Lo hago de manera constante</li>
+            <li><strong>Nunca</strong>: No lo hago en ninguna ocasión.</li>
+            <li><strong>Algunas veces</strong>: Lo hago en algunas situaciones.</li>
+            <li><strong>Siempre</strong>: Lo hago de manera constante.</li>
         </ul>
         <button id="show-questions-btn" class="primary-btn">Continuar</button>
     </div>
     
+    <!-- Progress indicator -->
+    <div id="progress-indicator" class="progress-section fade-transition" style="display: none;">
+        <div class="progress-text-container">
+            <span id="progress-text">Pregunta 1 de 45</span>
+        </div>
+        <div class="progress-bar-container">
+            <div id="progress-bar-fill" class="progress-bar-fill"></div>
+        </div>
+    </div>
+    
     <!-- Container for dynamically generated questions (initially hidden) -->
-    <div id="test-container" class="section" style="display: none;">
+    <div id="test-container" class="section fade-transition" style="display: none;">
         <!-- Questions will be generated here by JavaScript -->
     </div>
     
     <!-- Button to submit the test and calculate results -->
-    <button id="submit-btn" class="primary-btn" style="display: none;">Calcular Resultados</button>
+    <button id="submit-btn" class="primary-btn fade-transition" style="display: none;">Calcular Resultados</button>
     
     <!-- Results section (hidden initially) -->
-    <div id="results" class="section" style="display: none;">
+    <div id="results" class="section fade-transition" style="display: none;">
         <h2>Resultados del Test</h2>
         <!-- Progress bar to visualize the score -->
         <div class="progress-container">
@@ -101,10 +125,9 @@
     </div>
 
     <!-- Thank you message after saving results -->
-    <div id="thank-you" class="section" style="display: none;">
+    <div id="thank-you" class="section fade-transition" style="display: none;">
         <h2>¡Gracias por completar el test!</h2>
-        <p>Tus respuestas han sido guardadas correctamente.</p>
-        <p>Los resultados ayudarán en el análisis de la inteligencia emocional.</p>
+        <p>Tus respuestas han sido guardadas correctamente y los resultados ayudarán en el análisis de la inteligencia emocional.</p>
         <button class="primary-btn" id="new-test-btn">Realizar un nuevo test</button>
     </div>
     

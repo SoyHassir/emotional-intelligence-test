@@ -14,7 +14,7 @@ const firebaseConfig = {
     messagingSenderId: "221906777252",
     appId: "1:221906777252:web:0b5b2d7fb50eae2b216231",
     measurementId: "G-3XMX5RCND4"
-  };
+};
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -25,8 +25,8 @@ const db = firebase.firestore();
 // Array containing all 45 questions/behaviors for the test
 const questions = [
     "Me conozco a mí mismo, sé lo que pienso, lo que siento y lo que hago.",
-     "Soy capaz de auto motivarme para aprender, estudiar, aprobar, conseguir algo."
-/*    "Cuando las cosas me van mal, mi estado de ánimo aguanta hasta que las cosas vayan mejor.",
+    "Soy capaz de auto motivarme para aprender, estudiar, aprobar, conseguir algo.",
+    "Cuando las cosas me van mal, mi estado de ánimo aguanta hasta que las cosas vayan mejor.",
     "Llego a acuerdos razonables con otras personas cuando tenemos posturas enfrentadas.",
     "Sé qué cosas me ponen alegre y qué cosas me ponen triste.",
     "Sé lo que es más importante en cada momento.",
@@ -68,7 +68,7 @@ const questions = [
     "Me responsabilizo de las cosas que hago.",
     "Me adapto a las nuevas situaciones, aunque me cuesten algún cambio en mi manera de sentir las cosas.",
     "Creo que soy una persona equilibrada emocionalmente.",
-    "Tomo decisiones sin dudar ni titubear demasiado." */
+    "Tomo decisiones sin dudar ni titubear demasiado."
 ];
 
 // Categories and interpretations for score ranges
@@ -81,22 +81,22 @@ const resultCategories = [
     {
         range: [21, 35],
         category: "BAJO",
-        interpretation: "Con esta puntuación tus habilidades emocionales son todavía escasas. Necesitas conocerte un poco mejor y valorar más lo que tú puedes ser capaz de hacer. Saber qué emociones experimentas, cómo las controlas, cómo las expresas y como las identificas en los demás es fundamental para que te puedas sentir bien, y desarrollar toda tu personalidad de una manera eficaz."
+        interpretation: "Tu puntaje muestra que aún estás en proceso de fortalecer tus habilidades emocionales. Te vendrá bien profundizar en tu autoconocimiento y reconocer todo tu potencial. Entender qué sientes, aprender a gestionarlo y expresarlo de forma adecuada, así como percibir las emociones de los demás, es esencial para sentirte bien y desplegar tu personalidad con mayor efectividad."
     },
     {
         range: [36, 45],
         category: "MEDIO-BAJO",
-        interpretation: "Casi lo conseguiste. Con esta puntuación te encuentras rayando lo deseable para tus habilidades emocionales. Ya conoces muchas cosas de lo que piensas, haces y sientes y, posiblemente, de cómo manejar tus emociones y comunicarte con eficacia con los demás. No obstante, no te conformes con este puntaje conseguido."
+        interpretation: "Estás muy cerca de lo ideal en tus habilidades emocionales. Sabes bien lo que piensas, haces y sientes, y ya manejas bastante bien tus emociones y tu forma de comunicarte con los demás. Aún así, no te quedes ahí: aprovecha este impulso para seguir creciendo y afinar aún más tu inteligencia emocional."
     },
     {
         range: [46, 79],
         category: "MEDIO-ALTO",
-        interpretation: "No está nada mal la puntuación que has obtenido. Indica que sabes quién eres, cómo te emocionas, cómo manejas tus sentimientos y cómo descubres todo esto en los demás. Tus relaciones con la gente las llevas bajo control, empleando para ello tus habilidades para saber cómo te sientes tú, cómo debes expresarlo y también conociendo cómo se sienten los demás, y qué debes hacer para mantener relaciones satisfactorias con otras personas."
+        interpretation: "Tu puntuación es muy buena. Demuestra que te conoces a fondo: entiendes cómo te emocionas, gestionas tus sentimientos y reconoces esas mismas emociones en los demás. Gracias a esto mantienes relaciones saludables, expresando lo que sientes de forma adecuada y atendiendo a lo que necesitan las personas que te rodean. Sigue aprovechando estas habilidades para reforzar aún más tus vínculos y tu bienestar emocional."
     },
     {
         range: [80, 90],
         category: "MUY ALTO",
-        interpretation: "Eres un superhéroe de la emoción y su control. Se diría que eres número 1 en eso de la INTELIGENCIA EMOCIONAL. Tus habilidades te permiten ser consciente de quién eres, qué objetivos pretendes, qué emociones vives, sabes valorarte como te mereces, manejas bien tus estados emocionales y, además, con más mérito todavía, eres capaz de comunicarte eficazmente con quienes te rodean, y también eres único/a para solucionar posconflictos interpersonales que cada día acontecen."
+        interpretation: "¡Eres todo un maestro de tus emociones! Tu puntuación refleja que dominas por completo tu inteligencia emocional: sabes quién eres, qué quieres y cómo te sientes en cada momento. Te valoras como te mereces, gestionas tus estados de ánimo con soltura y, lo más impresionante, te comunicas con claridad y empatía. Además, tienes un don para resolver esos pequeños conflictos del día a día y mantener un clima de entendimiento a tu alrededor. ¡Sigue brillando así!"
     }
 ];
 
@@ -111,6 +111,10 @@ let userData = {
     },
     timestamp: ""
 };
+
+// For batch loading questions
+let currentQuestionBatch = 0;
+const QUESTIONS_PER_BATCH = 10;
 
 /**
  * Shows the loading spinner
@@ -149,61 +153,184 @@ function validateDemographicData() {
         occupation: occupation
     };
     
+    // Save to localStorage
+    saveProgress();
+    
     return true;
 }
 
 /**
- * Shows the test instructions section
+ * Shows the test instructions section with smooth transition
  */
 function showInstructions() {
     if (validateDemographicData()) {
-        document.getElementById('demographic-section').style.display = 'none';
-        // Ocultar la introducción
+        showSectionWithTransition('#demographic-section', '#test-instructions');
         document.querySelector('.intro').style.display = 'none';
-        document.getElementById('test-instructions').style.display = 'block';
     }
 }
 
 /**
- * Shows the test questions section
+ * Shows the test questions section with smooth transition
  */
 function showQuestions() {
-    document.getElementById('test-instructions').style.display = 'none';
-    // Asegurarse de que la introducción sigue oculta
+    showSectionWithTransition('#test-instructions', '#test-container');
+    // Ensure that the introduction is still hidden
     document.querySelector('.intro').style.display = 'none';
-    document.getElementById('test-container').style.display = 'block';
+    document.getElementById('progress-indicator').style.display = 'block';
     document.getElementById('submit-btn').style.display = 'block';
+
+    // Initialize the progress indicator
+    updateProgressIndicator(1); // It starts at question 1
+
+    // Añade esto al final de la función showQuestions()
+setTimeout(() => {
+    const progressBar = document.getElementById('progress-indicator');
+    const submitButton = document.getElementById('submit-btn');
+    
+    progressBar.style.display = 'block';
+    progressBar.style.visibility = 'visible';
+    progressBar.style.opacity = '1';
+    
+    submitButton.style.display = 'block';
+    submitButton.style.visibility = 'visible';
+    submitButton.style.opacity = '1';
+    
+    console.log("Elementos forzados a mostrar:", progressBar, submitButton);
+  }, 500);
 }
 
 /**
- * Generates all question elements in the HTML document
- * Creates radio button groups for each question
+ * Handles transitions between sections
+ * @param {string} hideSelector - Selector of the section to hide
+ * @param {string} showSelector - Selector of the section to show
  */
-function generateQuestions() {
+function showSectionWithTransition(hideSelector, showSelector) {
+    const currentSection = document.querySelector(hideSelector);
+    if (currentSection) {
+        currentSection.classList.remove('fade-in');
+        
+        setTimeout(() => {
+            currentSection.style.display = 'none';
+            
+            const newSection = document.querySelector(showSelector);
+            if (newSection) {
+                newSection.classList.add('fade-transition');
+                newSection.style.display = 'block';
+                
+                // Force reflow
+                void newSection.offsetWidth;
+                
+                // Add fade-in class
+                newSection.classList.add('fade-in');
+            }
+        }, 300); // Match transition duration
+    }
+}
+
+/**
+ * Generates questions in batches for performance optimization
+ * @param {number} startIndex - Index to start generating questions from
+ */
+function generateQuestionBatch(startIndex) {
     const container = document.getElementById('test-container');
+    const endIndex = Math.min(startIndex + QUESTIONS_PER_BATCH, questions.length);
     
-    questions.forEach((question, index) => {
+    for (let i = startIndex; i < endIndex; i++) {
         // Create a container for each question
         const questionDiv = document.createElement('div');
-        questionDiv.className = 'question';
+        questionDiv.className = 'question fade-transition';
         
         // Add the question text and radio buttons for answers
         questionDiv.innerHTML = `
-            <div class="question-text">${index + 1}. ${question}</div>
+            <div class="question-text">${i + 1}. ${questions[i]}</div>
             <div class="options">
                 <label class="option">
-                    <input type="radio" name="q${index}" value="0" required> NUNCA
+                    <input type="radio" name="q${i}" value="0" aria-label="Nunca: ${questions[i]}"> Nunca
                 </label>
                 <label class="option">
-                    <input type="radio" name="q${index}" value="1" required> ALGUNAS VECES
+                    <input type="radio" name="q${i}" value="1" aria-label="Algunas veces: ${questions[i]}"> Algunas veces
                 </label>
                 <label class="option">
-                    <input type="radio" name="q${index}" value="2" required> SIEMPRE
+                    <input type="radio" name="q${i}" value="2" aria-label="Siempre: ${questions[i]}"> Siempre
                 </label>
             </div>
         `;
         container.appendChild(questionDiv);
+        
+        // Add fade-in animation with a slight delay for each question
+        setTimeout(() => {
+            questionDiv.classList.add('fade-in');
+        }, 50 * (i - startIndex));
+    }
+    
+    // Set up visual feedback for radio buttons
+    setupVisualFeedback();
+    
+    // Update current batch index
+    currentQuestionBatch = endIndex;
+    
+    // Set up scroll detection for loading next batch
+    setupScrollDetection();
+}
+
+/**
+ * Sets up scroll detection for dynamic loading of question batches
+ */
+function setupScrollDetection() {
+    if (currentQuestionBatch >= questions.length) {
+        // All questions loaded, no need for scroll detection
+        window.removeEventListener('scroll', scrollHandler);
+        return;
+    }
+    
+    window.addEventListener('scroll', scrollHandler);
+}
+
+/**
+ * Handles scroll events to load more questions when near the bottom
+ */
+function scrollHandler() {
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const pageHeight = document.body.offsetHeight;
+    
+    // If scrolled to near bottom, load more questions
+    if (scrollPosition > pageHeight - 500 && currentQuestionBatch < questions.length) {
+        generateQuestionBatch(currentQuestionBatch);
+        // Remove event listener to prevent multiple loads
+        window.removeEventListener('scroll', scrollHandler);
+    }
+}
+
+/**
+ * Sets up visual feedback for radio button selections
+ */
+function setupVisualFeedback() {
+    document.querySelectorAll('.option input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Flash effect on the parent question
+            const questionDiv = this.closest('.question');
+            questionDiv.style.backgroundColor = 'rgba(58, 123, 213, 0.05)';
+            setTimeout(() => {
+                questionDiv.style.backgroundColor = '';
+            }, 300);
+            
+            // Save progress when answering questions
+            saveProgress();
+        });
     });
+}
+
+/**
+ * Updates the progress indicator
+ * @param {number} currentQuestionIndex - The current question number
+ */
+function updateProgressIndicator(currentQuestionIndex) {
+    const totalQuestions = questions.length;
+    const progressPercentage = (currentQuestionIndex / totalQuestions) * 100;
+    
+    document.getElementById('progress-bar-fill').style.width = `${progressPercentage}%`;
+    document.getElementById('progress-text').textContent = 
+        `Pregunta ${currentQuestionIndex} de ${totalQuestions}`;
 }
 
 /**
@@ -265,8 +392,10 @@ function calculateResults() {
  * @param {number} score - The total score to display
  */
 function showResults(score) {
-    // Ocultar la sección de preguntas
+    // Hide the question section and progress indicator
     document.getElementById('test-container').style.display = 'none';
+    document.getElementById('progress-indicator').style.display = 'none';
+    document.getElementById('submit-btn').style.display = 'none';
     
     const resultsDiv = document.getElementById('results');
     const scoreSpan = document.getElementById('score');
@@ -304,17 +433,19 @@ function showResults(score) {
     // Add timestamp
     userData.timestamp = new Date().toISOString();
     
-    // Show the results div
+    // Show the results div with transition
+    resultsDiv.classList.add('fade-transition');
     resultsDiv.style.display = 'block';
-    
-    // Hide the submit button
-    document.getElementById('submit-btn').style.display = 'none';
+    setTimeout(() => {
+        resultsDiv.classList.add('fade-in');
+    }, 10);
     
     // Scroll to results
     resultsDiv.scrollIntoView({ behavior: 'smooth' });
     
-    // Save data to Firebase
+    // Save data to Firebase and localStorage
     saveUserDataToFirebase();
+    saveProgress();
 }
 
 /**
@@ -333,8 +464,6 @@ function saveUserDataToFirebase() {
     .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
         hideLoading();
-        // Show thank you message after short delay
-        //setTimeout(showThankYouMessage, 1000);
     })
     .catch((error) => {
         console.error("Error adding document: ", error);
@@ -344,11 +473,111 @@ function saveUserDataToFirebase() {
 }
 
 /**
+ * Saves progress to localStorage
+ */
+function saveProgress() {
+    // Save demographic data
+    localStorage.setItem('ei_test_demographic', JSON.stringify(userData.demographic));
+    
+    // Save answers
+    const answersToSave = [];
+    for (let i = 0; i < questions.length; i++) {
+        const options = document.getElementsByName(`q${i}`);
+        for (let j = 0; j < options.length; j++) {
+            if (options[j].checked) {
+                answersToSave.push({
+                    questionIndex: i,
+                    answer: options[j].value
+                });
+                break;
+            }
+        }
+    }
+    
+    localStorage.setItem('ei_test_answers', JSON.stringify(answersToSave));
+    console.log('Progress saved to localStorage');
+}
+
+/**
+ * Loads saved progress from localStorage
+ */
+function loadProgress() {
+    // Load demographic data
+    const savedDemographic = localStorage.getItem('ei_test_demographic');
+    if (savedDemographic) {
+        try {
+            const demographicData = JSON.parse(savedDemographic);
+            
+            // Fill in demographic fields
+            if (demographicData.age) document.getElementById('age').value = demographicData.age;
+            if (demographicData.gender) document.getElementById('gender').value = demographicData.gender;
+            if (demographicData.education) document.getElementById('education').value = demographicData.education;
+            if (demographicData.occupation) document.getElementById('occupation').value = demographicData.occupation;
+            
+            // Update empty class for selects
+            const selects = document.querySelectorAll('.form-group select');
+            selects.forEach(select => {
+                if (select.value) select.classList.remove('empty');
+            });
+            
+            // Store in userData
+            userData.demographic = demographicData;
+        } catch (e) {
+            console.error('Error loading demographic data:', e);
+        }
+    }
+    
+    // Load saved answers
+    const savedAnswers = localStorage.getItem('ei_test_answers');
+    if (savedAnswers) {
+        try {
+            const answers = JSON.parse(savedAnswers);
+            
+            // Fill in saved answers
+            answers.forEach(answer => {
+                const options = document.getElementsByName(`q${answer.questionIndex}`);
+                for (let j = 0; j < options.length; j++) {
+                    if (options[j].value === answer.answer) {
+                        options[j].checked = true;
+                        break;
+                    }
+                }
+            });
+            
+            // Update progress indicator
+            const answeredCount = answers.length;
+            if (answeredCount > 0) {
+                updateProgressIndicator(answeredCount);
+            }
+        } catch (e) {
+            console.error('Error loading saved answers:', e);
+        }
+    }
+    
+    console.log('Progress loaded from localStorage');
+}
+
+/**
+ * Toggles dark mode
+ */
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    
+    // Save preference to localStorage
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('ei_test_dark_mode', isDarkMode);
+    
+    // Update button text
+    const darkModeButton = document.getElementById('dark-mode-toggle');
+    darkModeButton.textContent = isDarkMode ? '☀️ Modo claro' : '🌙 Modo Oscuro';
+}
+
+/**
  * Shows the thank you message after saving data
  */
 function showThankYouMessage() {
-    document.getElementById('results').style.display = 'none';
-    document.getElementById('thank-you').style.display = 'block';
+    document.querySelector('header').style.display = 'none';
+    showSectionWithTransition('#results', '#thank-you');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -370,14 +599,23 @@ function resetTest() {
     document.getElementById('education').value = '';
     document.getElementById('occupation').value = '';
     
+    // Update selects empty class
+    const selects = document.querySelectorAll('.form-group select');
+    selects.forEach(select => {
+        select.classList.add('empty');
+    });
+    
     // Hide all sections except demographic
     document.getElementById('results').style.display = 'none';
     document.getElementById('test-container').style.display = 'none';
     document.getElementById('test-instructions').style.display = 'none';
     document.getElementById('thank-you').style.display = 'none';
+    document.getElementById('progress-indicator').style.display = 'none';
     
-    // Show demographic section
+    // Show header and demographic section
+    document.querySelector('header').style.display = 'block';
     document.getElementById('demographic-section').style.display = 'block';
+    document.querySelector('.intro').style.display = 'block';
     
     // Reset userData object
     userData = {
@@ -391,16 +629,33 @@ function resetTest() {
         timestamp: ""
     };
     
+    // Clear localStorage
+    localStorage.removeItem('ei_test_answers');
+    localStorage.removeItem('ei_test_demographic');
+    
+    // Reset question container and regenerate first batch
+    document.getElementById('test-container').innerHTML = '';
+    currentQuestionBatch = 0;
+    generateQuestionBatch(0);
+    
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Initialize the test when the page loads
 window.onload = function() {
-    // Generate all questions
-    generateQuestions();
+    // Check for dark mode preference
+    const darkModeSaved = localStorage.getItem('ei_test_dark_mode');
+    if (darkModeSaved === 'true') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('dark-mode-toggle').textContent = '☀️ Modo Claro';
+    }
+    
+    // Generate first batch of questions
+    generateAllQuestions();
     
     // Add event listeners
+    document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
     document.getElementById('start-test-btn').addEventListener('click', showInstructions);
     document.getElementById('show-questions-btn').addEventListener('click', showQuestions);
     
@@ -417,4 +672,80 @@ window.onload = function() {
     
     // Add click event listener to start a new test
     document.getElementById('new-test-btn').addEventListener('click', resetTest);
+
+    // Update progress when user answers questions
+    document.addEventListener('change', function(event) {
+        if (event.target.type === 'radio') {
+            // Count how many questions have been answered
+            let answeredCount = 0;
+            for (let i = 0; i < questions.length; i++) {
+                const options = document.getElementsByName(`q${i}`);
+                for (let j = 0; j < options.length; j++) {
+                    if (options[j].checked) {
+                        answeredCount++;
+                        break;
+                    }
+                }
+            }
+            updateProgressIndicator(answeredCount);
+        }
+    });
+    
+    // Check if empty selects
+    const selects = document.querySelectorAll('.form-group select');
+    selects.forEach(select => {
+        // Check initial state
+        if (!select.value || select.value === "") {
+            select.classList.add('empty');
+        }
+        
+        // Add listener for changes
+        select.addEventListener('change', function() {
+            if (!this.value || this.value === "") {
+                this.classList.add('empty');
+            } else {
+                this.classList.remove('empty');
+            }
+        });
+    });
+    
+    // Load saved progress
+    loadProgress();
+    
+    // Set up autosave interval (every 30 seconds)
+    setInterval(saveProgress, 30000);
 };
+
+/**
+ * Generates all questions at once instead of in batches
+ */
+function generateAllQuestions() {
+    const container = document.getElementById('test-container');
+    
+    questions.forEach((question, index) => {
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'question fade-transition';
+      
+      questionDiv.innerHTML = `
+          <div class="question-text">${index + 1}. ${question}</div>
+          <div class="options">
+              <label class="option">
+                  <input type="radio" name="q${index}" value="0" aria-label="Nunca: ${question}"> Nunca
+              </label>
+              <label class="option">
+                  <input type="radio" name="q${index}" value="1" aria-label="Algunas veces: ${question}"> Algunas veces
+              </label>
+              <label class="option">
+                  <input type="radio" name="q${index}" value="2" aria-label="Siempre: ${question}"> Siempre
+              </label>
+          </div>
+      `;
+      container.appendChild(questionDiv);
+      
+      setTimeout(() => {
+          questionDiv.classList.add('fade-in');
+      }, 20 * index);
+    });
+    
+    setupVisualFeedback();
+  }
