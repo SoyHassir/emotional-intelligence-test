@@ -597,3 +597,50 @@ body.dark-mode {
     z-index: 100;
     margin-bottom: 20px;
   }
+
+  /* Footer styles */
+.site-footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border-top: 3px solid var(--primary-color);
+}
+
+.site-footer p {
+    margin: 0;
+    color: var(--mid-gray);
+    font-size: 0.9rem;
+}
+
+.site-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.site-footer a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Dark mode styles for footer */
+.dark-mode .site-footer {
+    background-color: #2d3748;
+    border-color: #4a5568;
+}
+
+.dark-mode .site-footer p {
+    color: #cbd5e1;
+}
+
+.dark-mode .site-footer a {
+    color: #63b3ed;
+}
+
+.dark-mode .site-footer a:hover {
+    color: #90cdf4;
+}
